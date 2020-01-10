@@ -167,23 +167,8 @@ def generate_timeline_overview(sheets):
             writer = csv.writer(f)
             writer.writerows(rows)
 
-def adjust_column_widths(ws):
-    for column_cells in ws.columns:
-        length = max(len(str(cell.value)) for cell in column_cells)
-        ws.column_dimensions[column_cells[0].column_letter].width = length * 1.2
-
-def write_timeline_overview(ws_t, timeline_overview):
-    i = 1
-    for day, contents in timeline_overview.items():
-        day_cell = ws_t.cell(row=i, column=1)
-        day_cell.value = day
-
-        for item in contents:
-            col = (contents.index(item)+2)
-            desc_cell = ws_t.cell(row=i, column=col)
-            desc_cell.value = item
-        
-        i += 1
-
-sheets = load_sheets("timesheets")
+if len(sys.argv[1]) > 0:
+    sheets = load_sheets(sys.argv[1])
+else:
+    sheets = load_sheets("timesheets")
 generate_timeline_overview(sheets)
