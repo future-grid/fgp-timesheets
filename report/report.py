@@ -171,7 +171,7 @@ def generate_timeline_overview(sheets):
             writer = csv.writer(f)
             writer.writerows(rows)
 
-if len(sys.argv[1]) > 0:
+if len(sys.argv) > 0:
     sheets = load_sheets(sys.argv[1])
 else:
     sheets = load_sheets("timesheets")
