@@ -37,6 +37,7 @@ def iter_rows(ws):
         yield [cell.value for cell in row]
 
 def read_timesheet(filepath):
+    print("Reading " + filepath)
     wb = op.load_workbook(filepath)
     ws = wb.active # get the active worksheet (there will be only one worksheet per timesheet)
     if ws.cell(row=4,column=1).value == "=A3+1":
@@ -61,6 +62,7 @@ def save_sheets(sheet_list):
 
 def load_sheets(root_path):
     if '--load-cache' in sys.argv:
+        sys.argv.remove('--load-cache')
         print("Loading from cache.json")
         with open('cache.json', "r") as fpath:
             contents = json.load(fpath)
@@ -78,6 +80,7 @@ def load_sheets(root_path):
                     print(e)
 
     if '--cache' in sys.argv:
+        sys.argv.remove('--cache')
         save_sheets(sheets)
 
     return sheets
@@ -149,7 +152,8 @@ def generate_timeline_overview(sheets):
                             description_list = project["description"]
 
                             for hour, desc in zip(hour_list, description_list):
-                                description += (desc + " ("+str(hour)+"), ")
+                                # print("desc: " + str(desc) + " hour: " + str(hour)) THIS IS FOR VERBOSE PRINT LATER!!
+                                description += (str(desc)+ " ("+str(hour)+"), ")
                                 hours += hour
                             description = description[:-2] # remove trailing comma
                         else:
