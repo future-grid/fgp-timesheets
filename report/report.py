@@ -3,6 +3,15 @@
 import openpyxl as op
 import time, datetime, os, csv, json, sys
 
+# remove things from argv
+def remove_from_args(arg):
+    if arg in sys.argv:
+        sys.argv.remove(arg)
+
+remove_from_args("python3")
+remove_from_args("report.py")
+remove_from_args("report")
+
 # function will return an object with the date of the friday, and the initials of the creator
 # "filepath" is expected to be of form "TimeSheet_wYYYYMMDD_FL" FL = initials
 def get_data_from_title(filepath):
@@ -10,7 +19,7 @@ def get_data_from_title(filepath):
     initials = title[-2:]
     date = datetime.datetime.strptime(title[:-3], '%Y%m%d')
     date = date.timetuple()
-    date = time.strftime('%d-%m-%y', date)
+    date = time.strftime('%y-%m-%d', date)
 
     return {"initials": initials, "date": date}
 
@@ -18,10 +27,10 @@ def get_data_from_title(filepath):
 def get_day_from_data(row,friday_date):
     # this array defines the difference between the given day and friday. eg friday-friday = 0, friday-wednesday=2
     week_order = ["Friday", "Thursday", "Wednesday", "Tuesday", "Monday", "Sunday"]
-    friday_date = datetime.datetime.strptime(friday_date, '%d-%m-%y')
+    friday_date = datetime.datetime.strptime(friday_date, '%y-%m-%d')
     date = friday_date - datetime.timedelta(days=week_order.index(row[0])) # row[0] is always the day of the week eg. "Tuesday"
     date = date.timetuple()
-    date = time.strftime('%d-%m-%y', date)
+    date = time.strftime('%y-%m-%d', date)
 
     projects=[]
     for i in range(2, len(row)-1, 3):
@@ -90,7 +99,7 @@ def get_date(sheets, looking_for="earliest"):
     best_date = None
     for sheet in sheets:
         for day in sheet["days"]:
-            date = datetime.datetime.strptime(day['date'], '%d-%m-%y')
+            date = datetime.datetime.strptime(day['date'], '%y-%m-%d')
             best_date = date if best_date is None else best_date
             if looking_for is "earliest":
                 best_date = date if date < best_date else best_date
@@ -108,7 +117,7 @@ def generate_timeline_overview(sheets):
 
     # iterate over days
     while True:
-        date = datetime.datetime.strftime(current_date, '%d-%m-%y')
+        date = datetime.datetime.strftime(current_date, '%y-%m-%d')
         # increase day count by one, if we are at end - stop
         current_date = current_date + datetime.timedelta(days=1)
         for sheet in sheets:
@@ -172,7 +181,7 @@ def generate_timeline_overview(sheets):
             writer.writerows(rows)
 
 if len(sys.argv) > 0:
-    sheets = load_sheets(sys.argv[1])
+    sheets = load_sheets(sys.argv[0])
 else:
     sheets = load_sheets("timesheets")
 generate_timeline_overview(sheets)
