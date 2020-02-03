@@ -112,7 +112,7 @@ def generate_timeline_overview(sheets):
     late_date = get_date(sheets, looking_for="latest") + datetime.timedelta(days=1)
     current_date = early_date
 
-    first_row = ["Date", "Employee", "Project", "Hours", "Description"]
+    first_row = ["Workday", "Employee", "Project", "Hours", "Description"]
     rows = [first_row]
 
     # iterate over days
